@@ -14,10 +14,10 @@ export default function Login() {
     // Navigate based on role
     if (activeTab === "student") {
       navigate("/student/dashboard");
-    } else {
-      alert(
-        `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} login will be connected to backend later.`
-      );
+    } else if (activeTab === "faculty") {
+      navigate("/faculty/dashboard");
+    } else if (activeTab === "admin") {
+      navigate("/admin/dashboard");
     }
   };
 
