@@ -1,13 +1,54 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function AdminDashboard() {
+export default function AdminSubject() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [editingSubject, setEditingSubject] = useState(null);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     navigate('/login');
+  };
+
+  // Sample subject data - matching the mockup (No., Subject Code, Description)
+  const [subjectList] = useState([
+    {
+      id: 1,
+      no: "001",
+      code: "IA-1",
+      description: "INFORMATION ASSURANCE AND SECURITY"
+    },
+    {
+      id: 2,
+      no: "002",
+      code: "MMC",
+      description: "MULTIMEDIA CONCEPTS"
+    },
+    {
+      id: 3,
+      no: "003",
+      code: "WEB2",
+      description: "ADVANCED WEB DEVELOPMENT"
+    },
+  ]);
+
+  const filteredSubjects = subjectList.filter(
+    (subject) =>
+      subject.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      subject.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleAddSubject = () => {
+    setEditingSubject(null);
+    setShowModal(true);
+  };
+
+  const handleEditSubject = (subject) => {
+    setEditingSubject(subject);
+    setShowModal(true);
   };
 
   return (
@@ -33,7 +74,7 @@ export default function AdminDashboard() {
         </div>
 
         <nav className="ad-nav">
-          <button className="ad-link ad-link--active" type="button" onClick={() => navigate('/admin/dashboard')}>
+          <button className="ad-link" type="button" onClick={() => navigate('/admin/dashboard')}>
             <span className="ad-linkIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -78,7 +119,7 @@ export default function AdminDashboard() {
             </span>
             <span className="ad-linkText">Department</span>
           </button>
-          <button className="ad-link" type="button" onClick={() => navigate('/admin/subject')}>
+          <button className="ad-link ad-link--active" type="button" onClick={() => navigate('/admin/subject')}>
             <span className="ad-linkIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -170,7 +211,7 @@ export default function AdminDashboard() {
             </button>
 
             <div className="ad-breadcrumb">
-              <span>Dashboard</span>
+              <span>Manage Subject</span>
             </div>
           </div>
 
@@ -203,7 +244,7 @@ export default function AdminDashboard() {
 
               {dropdownOpen && (
                 <div className="ad-dropdownMenu">
-                  <button className="ad-dropdownItem" type="button">
+                  <button type="button" className="ad-dropdownItem">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                       <circle cx="12" cy="7" r="4" />
@@ -229,77 +270,73 @@ export default function AdminDashboard() {
         <section className="ad-content">
           <div className="ad-welcomeHeader">
             <div>
-              <h2 className="ad-title">Welcome, Admin!</h2>
-              <p className="ad-subtitle">System overview and management dashboard</p>
+              <h2 className="ad-title">Manage Subject</h2>
             </div>
-          </div>
-
-          {/* Current Academic Period Card */}
-          <div className="ad-periodCard">
-            <div className="ad-periodIcon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
+            <button className="ad-btnPrimary" onClick={handleAddSubject}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-            </div>
-            <div>
-              <div className="ad-periodLabel">CURRENT PERIOD</div>
-              <div className="ad-periodTitle">Academic Year: 2025-2026 2nd Semester</div>
-              <div className="ad-periodStatus">
-                <strong>Evaluation Status:</strong> <span className="ad-statusBadge">On-going</span>
-              </div>
-            </div>
+              Add New Subject
+            </button>
           </div>
 
-          {/* Stats cards */}
-          <div className="ad-statsGrid">
-            <div className="ad-statCard ad-statCard--primary">
-              <div className="ad-statIcon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-              </div>
-              <div className="ad-statContent">
-                <div className="ad-statNum">3</div>
-                <div className="ad-statLabel">TOTAL FACULTIES</div>
-              </div>
-            </div>
-
-            <div className="ad-statCard ad-statCard--success">
-              <div className="ad-statIcon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <div className="ad-statContent">
-                <div className="ad-statNum">49</div>
-                <div className="ad-statLabel">TOTAL STUDENTS</div>
-              </div>
-            </div>
-
-            <div className="ad-statCard ad-statCard--info">
-              <div className="ad-statIcon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                </svg>
-              </div>
-              <div className="ad-statContent">
-                <div className="ad-statNum">10</div>
-                <div className="ad-statLabel">TOTAL EVALUATIONS</div>
-              </div>
-            </div>
+          {/* SEARCH BAR */}
+          <div className="ad-searchBar">
+            <button className="ad-searchBtn">search</button>
+            <input
+              type="text"
+              className="ad-searchInput"
+              placeholder="Search subjects..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
 
-      
+          {/* SUBJECT TABLE CARD */}
+          <div className="ad-tableCard">
+            <div className="ad-tableWrap">
+              <table className="ad-table">
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>Subject Code</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSubjects.map((subject) => (
+                    <tr key={subject.id}>
+                      <td className="ad-code">{subject.no}</td>
+                      <td className="ad-code">{subject.code}</td>
+                      <td className="ad-name">{subject.description}</td>
+                      <td className="ad-tableActions">
+                        <button 
+                          className="ad-actionBtn ad-actionBtn--edit" 
+                          title="Edit"
+                          onClick={() => handleEditSubject(subject)}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19H4v-3L16.5 3.5z" />
+                          </svg>
+                        </button>
+                        <button className="ad-actionBtn ad-actionBtn--delete" title="Delete">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </section>
 
         {/* FOOTER */}
@@ -307,6 +344,42 @@ export default function AdminDashboard() {
           Copyright © 2026 FacultyTrack. All Rights Reserved.
         </footer>
       </main>
+
+      {/* MODAL */}
+      {showModal && (
+        <div className="ad-modal">
+          <div className="ad-modalOverlay" onClick={() => setShowModal(false)} />
+          <div className="ad-modalContent">
+            <div className="ad-modalHeader">
+              <h3 className="ad-modalTitle">
+                {editingSubject ? 'Edit Subject' : 'Add New Subject'}
+              </h3>
+              <button className="ad-modalClose" onClick={() => setShowModal(false)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div className="ad-modalBody">
+              <div className="ad-formGroup">
+                <label className="ad-label">Subject Code</label>
+                <input type="text" className="ad-input" placeholder="e.g., IA-1, WEB2" defaultValue={editingSubject?.code} />
+              </div>
+              <div className="ad-formGroup">
+                <label className="ad-label">Subject Description</label>
+                <input type="text" className="ad-input" placeholder="Full subject name" defaultValue={editingSubject?.description} />
+              </div>
+            </div>
+            <div className="ad-modalFooter">
+              <button className="ad-btnSecondary" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="ad-btnPrimary" onClick={() => setShowModal(false)}>
+                {editingSubject ? 'Update' : 'Save'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

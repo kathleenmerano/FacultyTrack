@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Users, Shield, Eye, EyeOff } from "lucide-react";
+import { User, Users, Shield, Eye, EyeOff, ArrowLeft, Lock } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -21,6 +21,10 @@ export default function Login() {
     }
   };
 
+  const handleBack = () => {
+    navigate("/");
+  };
+
   const getTabContent = () => {
     switch (activeTab) {
       case "student":
@@ -38,11 +42,12 @@ export default function Login() {
 
   return (
     <div className="login-bg">
+      <button type="button" className="back-button" onClick={handleBack}>
+        <ArrowLeft size={20} />
+        <span>Back to Home</span>
+      </button>
+
       <div className="login-container">
-        <div className="login-header">
-          <div className="login-title">FacultyTrack</div>
-          <div className="login-subtitle">Faculty Evaluation System</div>
-        </div>
 
         <div className="login-card">
           <div className="role-tabs">
@@ -94,7 +99,7 @@ export default function Login() {
 
             <div className="form-group">
               <label className="form-label">
-                <span style={{ fontSize: "16px" }}>🔒</span>
+                <Lock size={16} />
                 Password
               </label>
 
@@ -134,8 +139,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-
-      <div className="page-footer">Consolatrix College of Toledo City</div>
 
     </div>
   );

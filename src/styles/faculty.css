@@ -284,6 +284,89 @@
 .fd-statIcon--rating { background: #fef3c7; color: #f59e0b; }
 .fd-statIcon--responses { background: #dbeafe; color: #3b82f6; }
 
+/* Profile Card */
+.fd-profileCard {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  max-width: 640px;
+  margin-bottom: 20px;
+}
+
+.fd-profileHeader {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+.fd-profileAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  background: #0f3b63;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.fd-profileInfo {
+  flex: 1;
+}
+
+.fd-profileName {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.fd-profileRole {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.fd-profileDetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.fd-profileField {
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.fd-profileLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.fd-profileValue {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+}
+
 /* Table Card */
 .fd-tableCard {
   background: #fff;
@@ -911,6 +994,7 @@
   background: #22c55e;
   color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  position: relative;
 }
 
 .fd-summaryBadge .fd-summaryNum {
@@ -924,6 +1008,163 @@
   text-align: center;
   margin-top: 6px;
   font-weight: 600;
+}
+
+.fd-trendIndicator {
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* ========================= ACADEMIC PERIOD SELECTOR ========================= */
+.fd-periodSelectorCard {
+  background: linear-gradient(135deg, #0f3b63 0%, #1a4d7d 100%);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease;
+}
+
+.fd-periodSelectorWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fd-periodSelectorLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #f5c400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fd-periodSelector {
+  position: relative;
+}
+
+.fd-periodSelectorBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fd-periodSelectorBtn:hover {
+  border-color: #f5c400;
+  box-shadow: 0 2px 8px rgba(245, 196, 0, 0.2);
+}
+
+.fd-periodSelectorBtn:focus {
+  outline: none;
+  border-color: #f5c400;
+  box-shadow: 0 0 0 3px rgba(245, 196, 0, 0.1);
+}
+
+.fd-periodSelectorText {
+  flex: 1;
+  text-align: left;
+}
+
+.fd-periodSelectorIcon {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.fd-periodSelectorIcon--open {
+  transform: rotate(180deg);
+}
+
+.fd-periodDropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  z-index: 100;
+  max-height: 400px;
+  overflow-y: auto;
+  animation: dropdownSlideIn 0.2s ease;
+}
+
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fd-periodDropdownItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #374151;
+}
+
+.fd-periodDropdownItem:hover {
+  background: #f3f4f6;
+}
+
+.fd-periodDropdownItem--active {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.fd-periodDropdownItem--active:hover {
+  background: #fde68a;
+}
+
+.fd-periodDropdownItemText {
+  flex: 1;
+  min-width: 0;
+}
+
+.fd-periodDropdownItemTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: inherit;
+}
+
+.fd-periodDropdownItemMeta {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.fd-periodDropdownItem--active .fd-periodDropdownItemMeta {
+  color: #78350f;
 }
 
 /* ========================= DETAILS BREAKDOWN ========================= */
@@ -1033,6 +1274,10 @@
   .fd-table { font-size: 13px; }
   .fd-table th, .fd-table td { padding: 10px 12px; }
   .fd-ratingBar { width: 100px; }
+  .fd-periodSelectorCard { padding: 16px; }
+  .fd-periodSelectorBtn { padding: 12px 14px; font-size: 13px; }
+  .fd-periodDropdownItemTitle { font-size: 13px; }
+  .fd-periodDropdownItemMeta { font-size: 11px; }
 }
 
 @media (max-width: 640px) {
@@ -1045,6 +1290,10 @@
   .fd-sidebar { width: 240px; }
   .fd-criteriaRow { flex-direction: column; align-items: flex-start; gap: 8px; }
   .fd-criteriaRating { width: 100%; }
+  .fd-periodSelectorCard { padding: 14px; }
+  .fd-periodSelectorLabel { font-size: 11px; }
+  .fd-periodSelectorBtn { padding: 10px 12px; }
+  .fd-periodDropdownItem { padding: 10px 12px; }
 }
 
 @media (max-width: 480px) {

@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
 import schoolBg from "../assets/school-bg.jpg";
-import logo from "../assets/logo (3).png";
+import logo from "../assets/Logo (3).png";
 
 export default function Home() {
   return (

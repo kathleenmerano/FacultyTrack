@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { Search, X, List } from "lucide-react";
 
 
 export default function StudentEvaluation() {
@@ -17,16 +17,69 @@ export default function StudentEvaluation() {
     navigate('/login');
   };
 
-  // Mock faculty data
-  const facultyList = [
-    { id: 1, name: "Dr. Bruce Wayne", subject: "IM2", status: "pending" },
-    { id: 2, name: "Prof. izek Omerta", subject: "Web 2", status: "pending" },
-    { id: 3, name: "Dr. Sarah Johnson", subject: "SAD", status: "submitted" },
-    { id: 4, name: "Prof. Michael Cruz", subject: "IT PROF EL", status: "pending" },
-    { id: 5, name: "Dr. Ana Lopez", subject: "SIA", status: "pending" },
+  // LOGGED-IN STUDENT INFO (Mock - will come from authentication/context in backend)
+  const loggedInStudent = {
+    id: "019",
+    name: "John Doe",
+    department: "BSIT",
+    yearLevel: "3rd",
+    section: "D"
+  };
+
+  // Mock class assignments (Faculty-Subject-Section mappings)
+  // In backend, this will be fetched from the database
+  const classAssignments = [
+    {
+      facultyId: "001",
+      facultyName: "Dr. Bruce Wayne",
+      subjectCode: "WEB2",
+      subjectName: "ADVANCED WEB DEVELOPMENT",
+      department: "BSIT",
+      yearLevel: "3rd",
+      section: "D",
+      semester: "2nd Semester",
+      academicYear: "2025-2026"
+    },
+    {
+      facultyId: "002",
+      facultyName: "Prof. Izek Omerta",
+      subjectCode: "IA-1",
+      subjectName: "INFORMATION ASSURANCE AND SECURITY",
+      department: "BSIT",
+      yearLevel: "3rd",
+      section: "D",
+      semester: "2nd Semester",
+      academicYear: "2025-2026"
+    },
+    {
+      facultyId: "003",
+      facultyName: "Dr. Sarah Johnson",
+      subjectCode: "SAD",
+      subjectName: "SYSTEMS ANALYSIS AND DESIGN",
+      department: "BSIT",
+      yearLevel: "2nd",
+      section: "C",
+      semester: "2nd Semester",
+      academicYear: "2025-2026"
+    },
   ];
 
-  // Evaluation criteria
+  // FILTER faculty based on logged-in student's section
+  // Students only see faculty who teach their specific section
+  const assignedFaculty = classAssignments
+    .filter(assignment => 
+      assignment.department === loggedInStudent.department &&
+      assignment.yearLevel === loggedInStudent.yearLevel &&
+      assignment.section === loggedInStudent.section
+    )
+    .map(assignment => ({
+      id: assignment.facultyId,
+      name: assignment.facultyName,
+      subject: `${assignment.subjectCode} - ${assignment.subjectName}`,
+      status: "pending" // This will be determined by checking if evaluation exists
+    }));
+
+  // Evaluation criteria matching admin structure
   const evaluationCriteria = [
     {
       id: 1,
@@ -36,16 +89,18 @@ export default function StudentEvaluation() {
         "Explains concepts clearly and effectively",
         "Uses appropriate teaching methods and materials",
         "Encourages student participation and engagement",
+        "Presents content in an organized manner",
       ],
     },
     {
       id: 2,
-      category: "Classroom Management",
+      category: "Performance",
       items: [
         "Maintains discipline and order in the classroom",
         "Uses class time efficiently",
         "Starts and ends classes on time",
         "Creates a positive learning environment",
+        "Responds to student questions effectively",
       ],
     },
     {
@@ -56,6 +111,7 @@ export default function StudentEvaluation() {
         "Gives constructive feedback",
         "Returns graded work promptly",
         "Makes grading criteria clear",
+        "Provides opportunities for improvement",
       ],
     },
     {
@@ -66,11 +122,13 @@ export default function StudentEvaluation() {
         "Is accessible during consultation hours",
         "Demonstrates professionalism",
         "Serves as a positive role model",
+        "Communicates effectively with students",
       ],
     },
   ];
 
-  const filteredFaculty = facultyList.filter(
+  // Search filter on the ASSIGNED faculty only
+  const filteredFaculty = assignedFaculty.filter(
     (faculty) =>
       faculty.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       faculty.subject.toLowerCase().includes(searchQuery.toLowerCase())
@@ -95,6 +153,11 @@ export default function StudentEvaluation() {
     setShowModal(false);
     setSelectedFaculty(null);
   };
+
+  // Calculate total questions and answered questions
+  const totalQuestions = evaluationCriteria.reduce((sum, criteria) => sum + criteria.items.length, 0);
+  const answeredQuestions = Object.keys(ratings).length;
+  const progressPercentage = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
 
   return (
     <div className={`sd ${sidebarOpen ? "sd--open" : ""}`}>
@@ -258,12 +321,15 @@ export default function StudentEvaluation() {
               </svg>
             </div>
             <div>
-              <div className="sd-infoTitle">Academic Year: 2025–2026 2nd Semester</div>
+              <div className="sd-infoTitle">Academic Year: 2025-2026 2nd Semester</div>
               <div className="sd-infoText">
-                <strong>Evaluation Status:</strong> In Progress
+                <strong>Your Section:</strong> {loggedInStudent.department} {loggedInStudent.yearLevel} - {loggedInStudent.section}
               </div>
               <div className="sd-infoText">
-                <strong>Deadline:</strong> <span style={{background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '4px', fontWeight: 700}}>May 15, 2026</span>
+                <strong>Evaluation Status:</strong> In Progress ({assignedFaculty.filter(f => f.status === "submitted").length}/{assignedFaculty.length} Completed)
+              </div>
+              <div className="sd-infoText">
+                <strong>Deadline:</strong> <span className="sd-deadlineBadge">May 15, 2026</span>
               </div>
             </div>
           </div>
@@ -272,8 +338,8 @@ export default function StudentEvaluation() {
           <div className="se-tableCard">
             <div className="se-tableHeader">
               <div>
-                <h3 className="se-tableTitle">Faculty List</h3>
-                <p className="se-tableHint">Click "Evaluate" to rate your instructor</p>
+                <h3 className="se-tableTitle">Your Assigned Faculty</h3>
+                <p className="se-tableHint">You can only evaluate faculty who teach your section ({loggedInStudent.department} {loggedInStudent.yearLevel}-{loggedInStudent.section})</p>
               </div>
 
               <div className="se-searchBox">
@@ -327,7 +393,7 @@ export default function StudentEvaluation() {
 
           {/* FOOTER */}
           <footer className="sd-footer">
-            Copyright © 2026 FacultyTrack. All Rights Reserved.
+            Copyright (c) 2026 FacultyTrack. All Rights Reserved.
           </footer>
         </section>
       </main>
@@ -342,7 +408,7 @@ export default function StudentEvaluation() {
               <div>
                 <h3 className="se-modalTitle">Faculty Evaluation Form</h3>
                 <p className="se-modalSubtitle">
-                  {selectedFaculty.name} — {selectedFaculty.subject}
+                  {selectedFaculty.name} - {selectedFaculty.subject}
                 </p>
               </div>
 
@@ -351,50 +417,113 @@ export default function StudentEvaluation() {
               </button>
             </div>
 
+            {/* Progress Bar */}
+            <div className="se-progressSection">
+              <div className="se-progressInfo">
+                <span className="se-progressLabel">Completion Progress</span>
+                <span className="se-progressText">{answeredQuestions} of {totalQuestions} questions answered</span>
+              </div>
+              <div className="se-progressBar">
+                <div 
+                  className="se-progressFill" 
+                  style={{ width: `${progressPercentage}%` }}
+                />
+              </div>
+              <div className="se-progressPercent">{progressPercentage}%</div>
+            </div>
+
             <div className="se-modalBody">
               <div className="se-instructions">
-                <p>Please rate each item using the following scale:</p>
+                <div className="se-instructionsHeader">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4M12 8h.01" />
+                  </svg>
+                  <span>Rating Scale Guide</span>
+                </div>
                 <div className="se-scale">
-                  <span>5 - Outstanding</span>
-                  <span>4 - Very Good</span>
-                  <span>3 - Good</span>
-                  <span>2 - Fair</span>
-                  <span>1 - Poor</span>
+                  <div className="se-scaleItem">
+                    <span className="se-scaleNum">5</span>
+                    <span className="se-scaleLabel">Outstanding</span>
+                  </div>
+                  <div className="se-scaleItem">
+                    <span className="se-scaleNum">4</span>
+                    <span className="se-scaleLabel">Very Good</span>
+                  </div>
+                  <div className="se-scaleItem">
+                    <span className="se-scaleNum">3</span>
+                    <span className="se-scaleLabel">Good</span>
+                  </div>
+                  <div className="se-scaleItem">
+                    <span className="se-scaleNum">2</span>
+                    <span className="se-scaleLabel">Fair</span>
+                  </div>
+                  <div className="se-scaleItem">
+                    <span className="se-scaleNum">1</span>
+                    <span className="se-scaleLabel">Poor</span>
+                  </div>
                 </div>
               </div>
 
-              {evaluationCriteria.map((criteria) => (
-                <div key={criteria.id} className="se-criteriaSection">
-                  <h4 className="se-criteriaTitle">{criteria.category}</h4>
-
-                  {criteria.items.map((item, index) => (
-                    <div key={index} className="se-criteriaItem">
-                      <div className="se-criteriaText">{item}</div>
-
-                      <div className="se-ratingButtons">
-                        {[1, 2, 3, 4, 5].map((rating) => (
-                          <button
-                            key={rating}
-                            type="button"
-                            className={`se-ratingBtn ${
-                              ratings[`${criteria.id}-${index}`] === rating ? "se-ratingBtn--active" : ""
-                            }`}
-                            onClick={() => handleRatingChange(criteria.id, index, rating)}
-                          >
-                            {rating}
-                          </button>
-                        ))}
+              {evaluationCriteria.map((criteria) => {
+                const answeredCount = criteria.items.filter((_, idx) => ratings[`${criteria.id}-${idx}`]).length;
+                const isComplete = answeredCount === criteria.items.length;
+                
+                return (
+                  <div key={criteria.id} className="se-criteriaCard">
+                    <div className="se-criteriaCardHeader">
+                      <div className="se-criteriaIconWrap">
+                        <List size={20} strokeWidth={2.5} />
+                      </div>
+                      <div className="se-criteriaHeaderContent">
+                        <h4 className="se-criteriaTitle">{criteria.category}</h4>
+                        <p className="se-criteriaSubtitle">
+                          {answeredCount} of {criteria.items.length} questions answered
+                          {isComplete && <span className="se-completeBadge">✓ Complete</span>}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ))}
 
-              <div className="se-commentsSection">
-                <label className="se-commentsLabel">Additional Comments (Optional)</label>
+                    <div className="se-criteriaItems">
+                      {criteria.items.map((item, index) => (
+                        <div key={index} className="se-criteriaItem">
+                          <div className="se-criteriaItemHeader">
+                            <span className="se-criteriaNumber">{index + 1}</span>
+                            <div className="se-criteriaText">{item}</div>
+                          </div>
+
+                          <div className="se-ratingButtons">
+                            {[1, 2, 3, 4, 5].map((rating) => (
+                              <button
+                                key={rating}
+                                type="button"
+                                className={`se-ratingBtn ${
+                                  ratings[`${criteria.id}-${index}`] === rating ? "se-ratingBtn--active" : ""
+                                }`}
+                                onClick={() => handleRatingChange(criteria.id, index, rating)}
+                                title={rating === 5 ? 'Outstanding' : rating === 4 ? 'Very Good' : rating === 3 ? 'Good' : rating === 2 ? 'Fair' : 'Poor'}
+                              >
+                                {rating}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div className="se-commentsCard">
+                <div className="se-commentsHeader">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <label className="se-commentsLabel">Additional Comments (Optional)</label>
+                </div>
                 <textarea
                   className="se-commentsTextarea"
-                  placeholder="Share your thoughts about this instructor..."
+                  placeholder="Share your thoughts, suggestions, or feedback about this instructor's teaching performance..."
                   rows="4"
                 />
               </div>
@@ -404,8 +533,16 @@ export default function StudentEvaluation() {
               <button type="button" className="se-modalBtn se-modalBtn--cancel" onClick={() => setShowModal(false)}>
                 Cancel
               </button>
-              <button type="button" className="se-modalBtn se-modalBtn--submit" onClick={handleSubmitEvaluation}>
-                Submit Evaluation
+              <button 
+                type="button" 
+                className="se-modalBtn se-modalBtn--submit" 
+                onClick={handleSubmitEvaluation}
+                disabled={answeredQuestions < totalQuestions}
+              >
+                {answeredQuestions < totalQuestions 
+                  ? `Complete ${totalQuestions - answeredQuestions} more` 
+                  : 'Submit Evaluation'
+                }
               </button>
             </div>
           </div>

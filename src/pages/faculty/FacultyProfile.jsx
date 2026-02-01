@@ -1,30 +1,37 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function FacultyDashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(true); // Default open on desktop
+export default function FacultyProfile() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Add any logout logic here (clear tokens, etc.)
     navigate('/login');
   };
 
+  // Mock faculty data
+  const facultyData = {
+    id: "FAC-2024-001",
+    name: "Dr. Bruce Wayne",
+    email: "bruce.wayne@example.edu",
+    department: "Information Technology",
+    position: "Associate Professor",
+    specialization: "Web Development & Software Engineering",
+    employmentStatus: "Full-Time",
+    contactNumber: "+63 917 123 4567",
+    officeLocation: "Room 302, IT Building"
+  };
+
   return (
-    <div className={`fd ${sidebarOpen ? "fd--open" : ""}`}>
+    <div className="fd">
       {/* SIDEBAR - FIXED */}
       <aside className="fd-sidebar">
         <div className="fd-brand">
           <div className="fd-logo">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="12" cy="12" r="10" />
-              <path
-                d="M12 6v6l4 2"
-                stroke="#1a3a5c"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
+              <path d="M12 6v6l4 2" stroke="#0f3b63" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </div>
           <div className="fd-brandInfo">
@@ -34,26 +41,26 @@ export default function FacultyDashboard() {
         </div>
 
         <nav className="fd-nav">
-          <Link className="fd-link fd-link--active" to="/faculty/dashboard" onClick={() => setSidebarOpen(false)}>
+          <Link className="fd-link" to="/faculty/dashboard">
             <span className="fd-linkIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                 <polyline points="9 22 9 12 15 12 15 22" />
               </svg>
             </span>
-            <span className="fd-linkText">Home</span>
+            <span className="fd-linkText">Dashboard</span>
           </Link>
 
-          <Link className="fd-link" to="/faculty/evaluations" onClick={() => setSidebarOpen(false)}>
+          <Link className="fd-link" to="/faculty/evaluations">
             <span className="fd-linkIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="16" y1="13" x2="8" y2="13" />
-                <line x1="16" y1="17" x2="8" y2="17" />
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+                <rect x="9" y="3" width="6" height="4" rx="2" />
+                <path d="M9 12h6" />
+                <path d="M9 16h6" />
               </svg>
             </span>
-            <span className="fd-linkText">Evaluation Result</span>
+            <span className="fd-linkText">Evaluation Results</span>
           </Link>
         </nav>
       </aside>
@@ -83,9 +90,8 @@ export default function FacultyDashboard() {
                 <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             </button>
-
             <div className="fd-breadcrumb">
-              <span>Dashboard</span>
+              <span>My Profile</span>
             </div>
           </div>
 
@@ -102,7 +108,7 @@ export default function FacultyDashboard() {
                     <circle cx="12" cy="7" r="4" />
                   </svg>
                 </div>
-                <span className="fd-topUserName">Bruce Wayne</span>
+                <span className="fd-topUserName">{facultyData.name}</span>
                 <svg
                   width="16"
                   height="16"
@@ -144,81 +150,70 @@ export default function FacultyDashboard() {
         <section className="fd-content">
           <div className="fd-welcomeHeader">
             <div>
-              <h2 className="fd-title">Welcome Bruce Wayne!</h2>
-              <p className="fd-subtitle">Overview of your evaluation results for the current period</p>
+              <h2 className="fd-title">My Profile</h2>
+              <p className="fd-subtitle">View and manage your account information</p>
             </div>
           </div>
 
-          {/* Current Academic Period Card */}
-          <div className="fd-periodCard">
-            <div className="fd-periodLabel">CURRENT PERIOD</div>
-            <div className="fd-periodTitle">Academic Year: 2025-2026 2nd Semester</div>
-          </div>
-
-          {/* Stats cards */}
-          <div className="fd-statsGrid">
-            <div className="fd-statCard">
-              <div className="fd-statContent">
-                <div className="fd-statNum">4.7</div>
-                <div className="fd-statLabel">OVERALL RATING</div>
+          {/* Profile Card */}
+          <div className="fd-profileCard">
+            <div className="fd-profileHeader">
+              <div className="fd-profileAvatar">
+                {facultyData.name.split(' ').map(n => n.charAt(0)).join('')}
               </div>
-              <div className="fd-statIcon fd-statIcon--rating">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
+              <div className="fd-profileInfo">
+                <h3 className="fd-profileName">{facultyData.name}</h3>
+                <span className="fd-profileRole">Faculty</span>
               </div>
             </div>
 
-            <div className="fd-statCard">
-              <div className="fd-statContent">
-                <div className="fd-statNum">34</div>
-                <div className="fd-statLabel">TOTAL RESPONSES</div>
+            <div className="fd-profileDetails">
+              <div className="fd-profileField">
+                <label className="fd-profileLabel">Faculty ID</label>
+                <div className="fd-profileValue">{facultyData.id}</div>
               </div>
-              <div className="fd-statIcon fd-statIcon--responses">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
+
+              <div className="fd-profileField">
+                <label className="fd-profileLabel">Email Address</label>
+                <div className="fd-profileValue">{facultyData.email}</div>
               </div>
-            </div>
-          </div>
 
-          {/* Evaluation Details Table */}
-          <div className="fd-tableCard">
-            <div className="fd-tableHeader">
-              <h3 className="fd-tableTitle">EVALUATION DETAILS</h3>
-            </div>
+              <div className="fd-profileField">
+                <label className="fd-profileLabel">Department</label>
+                <div className="fd-profileValue">{facultyData.department}</div>
+              </div>
 
-            <div className="fd-tableWrap">
-              <table className="fd-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Faculty Name</th>
-                    <th>Review Period</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>001</td>
-                    <td className="fd-studentName">Bruce Wayne</td>
-                    <td>2nd Sem | 2025-2026</td>
-                    <td>
-                      <span className="fd-badge fd-badge--submitted">View Result</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="fd-profileField">
+                <label className="fd-profileLabel">Position</label>
+                <div className="fd-profileValue">{facultyData.position}</div>
+              </div>
+
+              <div className="fd-profileField">
+                <label className="fd-profileLabel">Specialization</label>
+                <div className="fd-profileValue">{facultyData.specialization}</div>
+              </div>
+
+              <div className="fd-profileField">
+                <label className="fd-profileLabel">Employment Status</label>
+                <div className="fd-profileValue">{facultyData.employmentStatus}</div>
+              </div>
+
+              <div className="fd-profileField">
+                <label className="fd-profileLabel">Contact Number</label>
+                <div className="fd-profileValue">{facultyData.contactNumber}</div>
+              </div>
+
+              <div className="fd-profileField">
+                <label className="fd-profileLabel">Office Location</label>
+                <div className="fd-profileValue">{facultyData.officeLocation}</div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* FOOTER */}
         <footer className="fd-footer">
-          Copyright (c) 2026 FacultyTrack. All Rights Reserved.
+          <span>Copyright (c) 2026 FacultyTrack. All Rights Reserved.</span>
         </footer>
       </main>
     </div>

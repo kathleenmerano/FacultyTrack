@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function AdminDashboard() {
+export default function AdminReport() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -9,6 +9,34 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     navigate('/login');
   };
+
+  // Sample report data - matching image-3
+  const [reportList] = useState([
+    {
+      id: 1,
+      faculty: "Bruce Wayne",
+      department: "BSIT",
+      subjects: "IM2",
+      students: 32,
+      rating: "4.8"
+    },
+    {
+      id: 2,
+      faculty: "Izek Omerta",
+      department: "BSED",
+      subjects: "WEB 2",
+      students: 15,
+      rating: "4.3"
+    },
+    {
+      id: 3,
+      faculty: "John Doe",
+      department: "BSCS",
+      subjects: "OOP, DATA STRUCT",
+      students: 40,
+      rating: "4.6"
+    },
+  ]);
 
   return (
     <div className={`ad ${sidebarOpen ? "ad--open" : ""}`}>
@@ -33,7 +61,7 @@ export default function AdminDashboard() {
         </div>
 
         <nav className="ad-nav">
-          <button className="ad-link ad-link--active" type="button" onClick={() => navigate('/admin/dashboard')}>
+          <button className="ad-link" type="button" onClick={() => navigate('/admin/dashboard')}>
             <span className="ad-linkIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -131,7 +159,7 @@ export default function AdminDashboard() {
             </span>
             <span className="ad-linkText">Evaluation Criteria</span>
           </button>
-          <button className="ad-link" type="button" onClick={() => navigate('/admin/report')}>
+          <button className="ad-link ad-link--active" type="button" onClick={() => navigate('/admin/report')}>
             <span className="ad-linkIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="12" y1="2" x2="12" y2="22" />
@@ -170,7 +198,7 @@ export default function AdminDashboard() {
             </button>
 
             <div className="ad-breadcrumb">
-              <span>Dashboard</span>
+              <span>Evaluation Report</span>
             </div>
           </div>
 
@@ -203,7 +231,7 @@ export default function AdminDashboard() {
 
               {dropdownOpen && (
                 <div className="ad-dropdownMenu">
-                  <button className="ad-dropdownItem" type="button">
+                  <button type="button" className="ad-dropdownItem">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                       <circle cx="12" cy="7" r="4" />
@@ -227,79 +255,61 @@ export default function AdminDashboard() {
 
         {/* SCROLLABLE CONTENT */}
         <section className="ad-content">
-          <div className="ad-welcomeHeader">
-            <div>
-              <h2 className="ad-title">Welcome, Admin!</h2>
-              <p className="ad-subtitle">System overview and management dashboard</p>
+          <h2 className="ad-title">Evaluation Report</h2>
+
+          {/* FILTER SECTION */}
+          <div className="ad-filterCard">
+            <div className="ad-filterGroup">
+              <select className="ad-filterSelect">
+                <option value="">Academic Year</option>
+                <option value="2025-2026">2025-2026</option>
+                <option value="2024-2025">2024-2025</option>
+              </select>
+              <select className="ad-filterSelect">
+                <option value="">Select Semester</option>
+                <option value="1st">1st Semester</option>
+                <option value="2nd">2nd Semester</option>
+              </select>
+              <select className="ad-filterSelect">
+                <option value="">Faculty</option>
+                <option value="Bruce Wayne">Bruce Wayne</option>
+                <option value="Izek Omerta">Izek Omerta</option>
+              </select>
+              <button className="ad-btnSearch">Search</button>
             </div>
           </div>
 
-          {/* Current Academic Period Card */}
-          <div className="ad-periodCard">
-            <div className="ad-periodIcon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-            </div>
-            <div>
-              <div className="ad-periodLabel">CURRENT PERIOD</div>
-              <div className="ad-periodTitle">Academic Year: 2025-2026 2nd Semester</div>
-              <div className="ad-periodStatus">
-                <strong>Evaluation Status:</strong> <span className="ad-statusBadge">On-going</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats cards */}
-          <div className="ad-statsGrid">
-            <div className="ad-statCard ad-statCard--primary">
-              <div className="ad-statIcon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-              </div>
-              <div className="ad-statContent">
-                <div className="ad-statNum">3</div>
-                <div className="ad-statLabel">TOTAL FACULTIES</div>
-              </div>
-            </div>
-
-            <div className="ad-statCard ad-statCard--success">
-              <div className="ad-statIcon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <div className="ad-statContent">
-                <div className="ad-statNum">49</div>
-                <div className="ad-statLabel">TOTAL STUDENTS</div>
-              </div>
-            </div>
-
-            <div className="ad-statCard ad-statCard--info">
-              <div className="ad-statIcon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                </svg>
-              </div>
-              <div className="ad-statContent">
-                <div className="ad-statNum">10</div>
-                <div className="ad-statLabel">TOTAL EVALUATIONS</div>
-              </div>
+          {/* REPORT TABLE */}
+          <div className="ad-tableCard">
+            <div className="ad-tableWrap">
+              <table className="ad-table">
+                <thead>
+                  <tr>
+                    <th>Faculty Name</th>
+                    <th>Department</th>
+                    <th>Subjects</th>
+                    <th>No. of Student</th>
+                    <th>Average Ratings</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reportList.map((report) => (
+                    <tr key={report.id}>
+                      <td className="ad-name">{report.faculty}</td>
+                      <td className="ad-engagement">{report.department}</td>
+                      <td className="ad-engagement">{report.subjects}</td>
+                      <td className="ad-engagement">{report.students}</td>
+                      <td className="ad-engagement">{report.rating}</td>
+                      <td className="ad-tableActions">
+                        <button className="ad-btnView">VIEW</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-
-      
         </section>
 
         {/* FOOTER */}

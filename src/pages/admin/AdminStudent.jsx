@@ -1,13 +1,67 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function AdminDashboard() {
+export default function AdminStudent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     navigate('/login');
+  };
+
+  // Sample student data with year level and section
+  const [studentList] = useState([
+    {
+      id: 1,
+      schoolId: "019",
+      name: "Bruce Wayne",
+      email: "wayne@sample.com",
+      department: "BSIT",
+      yearLevel: "3rd",
+      section: "D",
+      status: "Active"
+    },
+    {
+      id: 2,
+      schoolId: "013",
+      name: "Izek Omerta",
+      email: "izek@sample.com",
+      department: "BSIT",
+      yearLevel: "2nd",
+      section: "C",
+      status: "Active"
+    },
+    {
+      id: 3,
+      schoolId: "014",
+      name: "sample",
+      email: "sample@sample.com",
+      department: "BSED",
+      yearLevel: "1st",
+      section: "A",
+      status: "Inactive"
+    },
+  ]);
+
+  const filteredStudents = studentList.filter(
+    (student) =>
+      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.schoolId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleAddStudent = () => {
+    setEditingStudent(null);
+    setShowModal(true);
+  };
+
+  const handleEditStudent = (student) => {
+    setEditingStudent(student);
+    setShowModal(true);
   };
 
   return (
@@ -33,7 +87,7 @@ export default function AdminDashboard() {
         </div>
 
         <nav className="ad-nav">
-          <button className="ad-link ad-link--active" type="button" onClick={() => navigate('/admin/dashboard')}>
+          <button className="ad-link" type="button" onClick={() => navigate('/admin/dashboard')}>
             <span className="ad-linkIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -57,7 +111,7 @@ export default function AdminDashboard() {
             </span>
             <span className="ad-linkText">Faculty</span>
           </button>
-          <button className="ad-link" type="button" onClick={() => navigate('/admin/student')}>
+          <button className="ad-link ad-link--active" type="button" onClick={() => navigate('/admin/student')}>
             <span className="ad-linkIcon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -170,7 +224,7 @@ export default function AdminDashboard() {
             </button>
 
             <div className="ad-breadcrumb">
-              <span>Dashboard</span>
+              <span>Student Management</span>
             </div>
           </div>
 
@@ -203,7 +257,7 @@ export default function AdminDashboard() {
 
               {dropdownOpen && (
                 <div className="ad-dropdownMenu">
-                  <button className="ad-dropdownItem" type="button">
+                  <button type="button" className="ad-dropdownItem">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                       <circle cx="12" cy="7" r="4" />
@@ -229,77 +283,92 @@ export default function AdminDashboard() {
         <section className="ad-content">
           <div className="ad-welcomeHeader">
             <div>
-              <h2 className="ad-title">Welcome, Admin!</h2>
-              <p className="ad-subtitle">System overview and management dashboard</p>
+              <h2 className="ad-title">Student Management</h2>
+              <p className="ad-subtitle">Manage all student accounts in the system</p>
             </div>
-          </div>
-
-          {/* Current Academic Period Card */}
-          <div className="ad-periodCard">
-            <div className="ad-periodIcon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
+            <button className="ad-btnPrimary" onClick={handleAddStudent}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-            </div>
-            <div>
-              <div className="ad-periodLabel">CURRENT PERIOD</div>
-              <div className="ad-periodTitle">Academic Year: 2025-2026 2nd Semester</div>
-              <div className="ad-periodStatus">
-                <strong>Evaluation Status:</strong> <span className="ad-statusBadge">On-going</span>
-              </div>
-            </div>
+              Add New Student
+            </button>
           </div>
 
-          {/* Stats cards */}
-          <div className="ad-statsGrid">
-            <div className="ad-statCard ad-statCard--primary">
-              <div className="ad-statIcon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-              </div>
-              <div className="ad-statContent">
-                <div className="ad-statNum">3</div>
-                <div className="ad-statLabel">TOTAL FACULTIES</div>
-              </div>
-            </div>
-
-            <div className="ad-statCard ad-statCard--success">
-              <div className="ad-statIcon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <div className="ad-statContent">
-                <div className="ad-statNum">49</div>
-                <div className="ad-statLabel">TOTAL STUDENTS</div>
-              </div>
-            </div>
-
-            <div className="ad-statCard ad-statCard--info">
-              <div className="ad-statIcon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                </svg>
-              </div>
-              <div className="ad-statContent">
-                <div className="ad-statNum">10</div>
-                <div className="ad-statLabel">TOTAL EVALUATIONS</div>
-              </div>
-            </div>
+          {/* SEARCH BAR */}
+          <div className="ad-searchBar">
+            <button className="ad-searchBtn">search</button>
+            <input
+              type="text"
+              className="ad-searchInput"
+              placeholder="Search students..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
 
-      
+          {/* STUDENT TABLE CARD */}
+          <div className="ad-tableCard">
+            <div className="ad-tableWrap">
+              <table className="ad-table">
+                <thead>
+                  <tr>
+                    <th>School ID</th>
+                    <th>Full Name</th>
+                    <th>Email/Username</th>
+                    <th>Department</th>
+                    <th>Year Level</th>
+                    <th>Section</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredStudents.map((student) => (
+                    <tr key={student.id}>
+                      <td className="ad-code">{student.schoolId}</td>
+                      <td className="ad-name">{student.name}</td>
+                      <td className="ad-email">{student.email}</td>
+                      <td className="ad-engagement">{student.department}</td>
+                      <td className="ad-engagement">{student.yearLevel}</td>
+                      <td className="ad-engagement">{student.section}</td>
+                      <td>
+                        <span className={`ad-badge ad-badge--${student.status.toLowerCase()}`}>
+                          {student.status}
+                        </span>
+                      </td>
+                      <td className="ad-tableActions">
+                        <button className="ad-actionBtn ad-actionBtn--view" title="View">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                        </button>
+                        <button 
+                          className="ad-actionBtn ad-actionBtn--edit" 
+                          title="Edit"
+                          onClick={() => handleEditStudent(student)}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19H4v-3L16.5 3.5z" />
+                          </svg>
+                        </button>
+                        <button className="ad-actionBtn ad-actionBtn--delete" title="Delete">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </section>
 
         {/* FOOTER */}
@@ -307,6 +376,82 @@ export default function AdminDashboard() {
           Copyright © 2026 FacultyTrack. All Rights Reserved.
         </footer>
       </main>
+
+      {/* MODAL */}
+      {showModal && (
+        <div className="ad-modal">
+          <div className="ad-modalOverlay" onClick={() => setShowModal(false)} />
+          <div className="ad-modalContent">
+            <div className="ad-modalHeader">
+              <h3 className="ad-modalTitle">
+                {editingStudent ? 'Edit Student' : 'Add New Student'}
+              </h3>
+              <button className="ad-modalClose" onClick={() => setShowModal(false)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div className="ad-modalBody">
+              <div className="ad-formGroup">
+                <label className="ad-label">School ID</label>
+                <input type="text" className="ad-input" placeholder="Enter school ID" defaultValue={editingStudent?.schoolId} />
+              </div>
+              <div className="ad-formGroup">
+                <label className="ad-label">Full Name</label>
+                <input type="text" className="ad-input" placeholder="Enter full name" defaultValue={editingStudent?.name} />
+              </div>
+              <div className="ad-formGroup">
+                <label className="ad-label">Email/Username</label>
+                <input type="email" className="ad-input" placeholder="Enter email" defaultValue={editingStudent?.email} />
+              </div>
+              <div className="ad-formGroup">
+                <label className="ad-label">Department</label>
+                <select className="ad-input" defaultValue={editingStudent?.department}>
+                  <option value="">Select department</option>
+                  <option value="BSIT">BSIT</option>
+                  <option value="BSCS">BSCS</option>
+                  <option value="BSED">BSED</option>
+                  <option value="BSHM">BSHM</option>
+                </select>
+              </div>
+              <div className="ad-formRow">
+                <div className="ad-formGroup">
+                  <label className="ad-label">Year Level</label>
+                  <select className="ad-input" defaultValue={editingStudent?.yearLevel}>
+                    <option value="">Select year</option>
+                    <option value="1st">1st Year</option>
+                    <option value="2nd">2nd Year</option>
+                    <option value="3rd">3rd Year</option>
+                    <option value="4th">4th Year</option>
+                  </select>
+                </div>
+                <div className="ad-formGroup">
+                  <label className="ad-label">Section</label>
+                  <select className="ad-input" defaultValue={editingStudent?.section}>
+                    <option value="">Select section</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                  </select>
+                </div>
+              </div>
+              <div className="ad-formGroup">
+                <label className="ad-label">Password</label>
+                <input type="password" className="ad-input" placeholder="Enter password" />
+              </div>
+            </div>
+            <div className="ad-modalFooter">
+              <button className="ad-btnSecondary" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="ad-btnPrimary" onClick={() => setShowModal(false)}>
+                {editingStudent ? 'Update' : 'Save'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
